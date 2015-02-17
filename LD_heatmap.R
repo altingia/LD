@@ -1,4 +1,4 @@
-nstall.packages("synbreed")
+install.packages("synbreed")
 install.packages("BLR", repos="http://R-Forge.R-project.org")
 install.packages("synbreed", repos="http://R-Forge.R-project.org")
 library(synbreed)
