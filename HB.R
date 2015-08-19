@@ -3,6 +3,7 @@ library(ggplot2)
 ################################################################################################################################################
 
 all <- read.table("/home/DB/M.esculenta/VCF_V6/HB/all.blocks", header=TRUE, quote="\"")
+all <- read.table("/run/user/1000/gvfs/sftp:host=128.253.192.28/home/DB/M.esculenta/VCF_V6/HB/all.blocks", header=TRUE, quote="\"")
 
 y<- all
 y <- y[-(which(y[,1] == "CHR")),]
@@ -52,7 +53,7 @@ p + geom_point(color="chartreuse4") +  ylim(0, 200) +
 
 setwd("/home/DB/M.esculenta/VCF_V6/HB/")
 
-for (i in 1:20){  
+for (i in 1:1){  
 
   num <- i
   selection <- which(y$CHR==num)
@@ -68,9 +69,65 @@ for (i in 1:20){
       ylab("HB size in Kb") +
       labs(size = "NSNPS")
   
-  namef <- paste("chr",num,".pdf")
-  ggsave(chr, file=namef)
+  #namef <- paste("chr",num,".pdf")
+  #ggsave(chr, file=namef)
  
                          
 }    
+
+
+table_positions <- read.delim("/run/user/1000/gvfs/sftp:host=128.253.192.28/home/roberto/Desktop/table_positions", header=FALSE)
+
+##############################################################################################################
+
+
+  
+num <- 1
+selection <- which(y$CHR==num)
+subset <- y[selection,]
+
+subset$group <- 1
+table_positions$NSNPS <- 1
+table_positions$group <- 2
+
+
+table_positions[,2] <- as.factor(table_positions[,2]*4 +200)
+table_positions[,1] <- as.factor(table_positions[,1])
+table_positions[,3] <- as.factor(table_positions[,3])
+
+colnames(table_positions) <- c("BP1", "KB", "NSNPS", "group")
+
+class(table_positions[,1])
+class(sub[,1])
+
+sub <- subset[,-c(1,3,6)]
+rownames(sub) <- c()
+
+visual12 <-rbind(as.data.frame(sub), as.data.frame(table_positions))
+visual12$group <- as.factor(visual12$group)
+
+g <- ggplot() +
+  geom_point(data=visual12, aes(x=as.numeric(levels(BP1))[BP1], y=as.numeric(levels(KB))[KB], size = as.numeric(levels(NSNPS))[NSNPS], group=group, col=group))+
+  scale_color_brewer(palette = "Set1")+
+  #scale_color_hue(l=50) +
+  labs(title = paste("Haplotype Blocks Chromosome ",num)) +
+  theme(plot.title = element_text(size=20, face="bold", vjust=2)) +
+  xlab("Position in chromosomes") +
+  ylab("HB size in Kb") +
+  labs(size = "NSNPS")
+
+
+g
+  
+
+
+
+
+
+
+
+
+
+
+
 
